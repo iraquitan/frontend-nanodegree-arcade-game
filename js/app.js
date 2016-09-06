@@ -1,8 +1,12 @@
+var xBounds = {min: 0, max: 505};
+var yBounds = {min: 0, max: 5*83};
 // Enemies our player must avoid
-var Enemy = function() {
+var Enemy = function(loc, speed) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
-
+    this.x = loc.x;
+    this.y = loc.y;
+    this.speed = speed;
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
     this.sprite = 'images/enemy-bug.png';
@@ -14,6 +18,11 @@ Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
+    if (this.x + (this.speed * dt) <= xBounds.max) {
+        this.x += this.speed * dt;
+    } else {
+        this.x = 0; // Reset enemy position
+    }
 };
 
 // Draw the enemy on the screen, required method for game
@@ -24,12 +33,50 @@ Enemy.prototype.render = function() {
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
+var Player = function () {
+    this.x = 2*101;
+    this.y = 5*83;
+    this.sprite = 'images/char-boy.png';
+};
 
+Player.prototype.update = function (input) {
+    if (input === "left") {
+        // this.x -= 101;
+        (this.x - 101) >= xBounds.min ? this.x -= 101 : this.x -= 0;
+    } else if (input === "right") {
+        // this.x += 101;
+        (this.x + 101) < xBounds.max ? this.x += 101 : this.x += 0;
+    } else if (input === "up") {
+        // this.y -= 101;
+        (this.y - 83) > yBounds.min ? this.y -= 83 : this.y -= 0;
+    } else if (input === "down") {
+        // this.y += 101;
+        (this.y + 83) <= yBounds.max ? this.y += 83 : this.x += 0;
+    }
+};
+Player.prototype.handleInput = function (input) {
+    this.update(input);
+};
+Player.prototype.render = function () {
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+};
+
+// Returns a random integer between min (included) and max (included)
+// Using Math.round() will give you a non-uniform distribution!
+function getRandomIntInclusive(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-
+var allEnemies = [{x:0, y:101}, {x:0, y:202}]
+                    .map(function (loc) {
+                        return new Enemy(loc, getRandomIntInclusive(100, 200));
+                    });
+var player = new Player();
 
 
 // This listens for key presses and sends the keys to your

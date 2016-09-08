@@ -1,11 +1,12 @@
 var xBounds = {min: 0, max: 505};
 var yBounds = {min: 0, max: 5*83};
+var enemyPositions = [50, 143, 225];
 // Enemies our player must avoid
-var Enemy = function(loc, speed) {
+var Enemy = function(speed) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
-    this.x = loc.x;
-    this.y = loc.y;
+    this.x = 0;
+    this.y = enemyPositions[getRandomIntInclusive(0, enemyPositions.length-1)];
     this.speed = speed;
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
@@ -21,7 +22,7 @@ Enemy.prototype.update = function(dt) {
     if (this.x + (this.speed * dt) <= xBounds.max) {
         this.x += this.speed * dt;
     } else {
-        this.x = 0; // Reset enemy position
+        this.reset(); // Reset enemy position
     }
 };
 
@@ -29,28 +30,28 @@ Enemy.prototype.update = function(dt) {
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 };
+Enemy.prototype.reset = function () {
+    this.x = 0;
+    this.y = enemyPositions[getRandomIntInclusive(0, enemyPositions.length-1)];
+}
 
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
 var Player = function () {
     this.x = 2*101;
-    this.y = 5*83;
+    this.y = 383;
     this.sprite = 'images/char-boy.png';
 };
 
 Player.prototype.update = function (input) {
     if (input === "left") {
-        // this.x -= 101;
         (this.x - 101) >= xBounds.min ? this.x -= 101 : this.x -= 0;
     } else if (input === "right") {
-        // this.x += 101;
         (this.x + 101) < xBounds.max ? this.x += 101 : this.x += 0;
     } else if (input === "up") {
-        // this.y -= 101;
-        (this.y - 83) > yBounds.min ? this.y -= 83 : this.y -= 0;
+        (this.y - 83) > yBounds.min ? this.y -= 83 : this.reset();
     } else if (input === "down") {
-        // this.y += 101;
         (this.y + 83) <= yBounds.max ? this.y += 83 : this.x += 0;
     }
 };
@@ -59,6 +60,10 @@ Player.prototype.handleInput = function (input) {
 };
 Player.prototype.render = function () {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+};
+Player.prototype.reset = function () {
+    this.x = 2*101;
+    this.y = 383;
 };
 
 // Returns a random integer between min (included) and max (included)
@@ -72,9 +77,9 @@ function getRandomIntInclusive(min, max) {
 // Now instantiate your objects.
 // Place all enemy objects in an array called allEnemies
 // Place the player object in a variable called player
-var allEnemies = [{x:0, y:101}, {x:0, y:202}]
-                    .map(function (loc) {
-                        return new Enemy(loc, getRandomIntInclusive(100, 200));
+var allEnemies = [1, 2, 3]
+                    .map(function (speed) {
+                        return new Enemy(getRandomIntInclusive(100, 500));
                     });
 var player = new Player();
 

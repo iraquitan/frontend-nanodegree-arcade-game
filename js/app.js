@@ -98,6 +98,8 @@ Player.prototype.render = function () {
 Player.prototype.reset = function () {
     this.spriteX = 2*101;
     this.spriteY = 383;
+    this.x = this.spriteX+17;
+    this.y = this.spriteY+63;
 };
 
 // Returns a random integer between min (included) and max (included)

@@ -34,7 +34,6 @@ Enemy.prototype.update = function(dt) {
 
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
-    // ctx.clearRect(this.spriteX+2, this.spriteY+78, 93, 66);
     ctx.drawImage(Resources.get(this.sprite), this.spriteX, this.spriteY);
     // ctx.rect(this.spriteX+2, this.spriteY+78, 93, 66);
     // ctx.stroke();
@@ -51,9 +50,9 @@ var Player = function () {
     this.spriteX = 2*101;
     this.spriteY = 383;
     this.x = this.spriteX+17;
-    this.y = this.spriteY+63;
+    this.y = this.spriteY+93;
     this.width = 68;
-    this.height = 77;
+    this.height = 47;
     this.sprite = 'images/char-boy.png';
 };
 
@@ -74,7 +73,8 @@ Player.prototype.update = function (input) {
         // (this.spriteY - 83) > yBounds.min ? this.spriteY -= 83 : this.reset();
         if ((this.spriteY - 83) > yBounds.min) {
             this.spriteY -= 83;
-            this.y = this.spriteY+63;
+            // this.y = this.spriteY+63;
+            this.y = this.spriteY+93;
         } else {
             this.reset();
         }
@@ -82,7 +82,8 @@ Player.prototype.update = function (input) {
         // (this.spriteY + 83) <= yBounds.max ? this.spriteY += 83 : this.spriteX += 0;
         if ((this.spriteY + 83) <= yBounds.max) {
             this.spriteY += 83;
-            this.y = this.spriteY+63;
+            // this.y = this.spriteY+63;
+            this.y = this.spriteY+93;
         }
     }
 };
@@ -90,16 +91,15 @@ Player.prototype.handleInput = function (input) {
     this.update(input);
 };
 Player.prototype.render = function () {
-    // ctx.clearRect(this.spriteX+17, this.spriteY+63, 68, 77);
     ctx.drawImage(Resources.get(this.sprite), this.spriteX, this.spriteY);
-    // ctx.rect(this.spriteX+17, this.spriteY+63, 68, 77);
-    // ctx.stroke();
+    // ctx.rect(this.spriteX+17, this.spriteY+93, 68, 47);
+    ctx.stroke();
 };
 Player.prototype.reset = function () {
     this.spriteX = 2*101;
     this.spriteY = 383;
     this.x = this.spriteX+17;
-    this.y = this.spriteY+63;
+    this.y = this.spriteY+93;
 };
 
 // Returns a random integer between min (included) and max (included)

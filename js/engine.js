@@ -23,7 +23,7 @@ var Engine = (function(global) {
         win = global.window,
         canvas = doc.createElement('canvas'),
         ctx = canvas.getContext('2d'),
-        lastTime;
+        lastTime
 
     canvas.width = 505;
     canvas.height = 606;
@@ -45,9 +45,13 @@ var Engine = (function(global) {
         /* Call our update/render functions, pass along the time delta to
          * our update function since it may be used for smooth animation.
          */
-        ctx.clearRect(0, 0, 505, 606);
-        update(dt);
-        render();
+        if (player.selected) {
+            update(dt);
+            render();
+        } else {
+            renderEnvironment();
+            playerSelection();
+        }
 
         /* Set our lastTime variable which is used to determine the time delta
          * for the next time this function is called.
@@ -104,8 +108,12 @@ var Engine = (function(global) {
                 enemy.x + enemy.width > player.x &&
                 enemy.y < player.y + player.height &&
                 enemy.height + enemy.y > player.y) {
-                // console.log("Collision detected!");
-                player.reset();
+                if (player.life > 0) {
+                    player.life -= 1;
+                    player.reset();
+                } else {
+                    reset();
+                }
             }
         });
     }
@@ -117,6 +125,14 @@ var Engine = (function(global) {
      * they are just drawing the entire screen over and over.
      */
     function render() {
+        renderEnvironment();
+        renderEntities();
+    }
+
+    /* This function is called by the render function and is called on each game
+     * tick. Its purpose is to render the environment.
+     */
+    function renderEnvironment() {
         /* This array holds the relative URL to the image used
          * for that particular row of the game level.
          */
@@ -148,10 +164,7 @@ var Engine = (function(global) {
                 ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 83);
             }
         }
-
-        renderEntities();
     }
-
     /* This function is called by the render function and is called on each game
      * tick. Its purpose is to then call the render functions you have defined
      * on your enemy and player entities within app.js
@@ -173,6 +186,51 @@ var Engine = (function(global) {
      */
     function reset() {
         // noop
+        if (player.life === 0) {
+            allEnemies = [1, 2, 3]
+                .map(function (speed) {
+                    return new Enemy(getRandomIntInclusive(100, 500));
+                });
+            player = new Player();
+            playerSelector = new Selector();
+            document.addEventListener('keyup', selectorEventHandler);
+        }
+    }
+
+    function playerSelection() {
+        var players = [
+                'images/char-boy.png',              // Boy character
+                'images/char-cat-girl.png',         // Cat Girl character
+                'images/char-horn-girl.png',        // Horn Girl character
+                'images/char-pink-girl.png',        // Pink Girl character
+                'images/char-princess-girl.png'     // Princess Girl character
+            ],
+            numCols = 5,
+            col;
+
+        ctx.font = "80px Sans-serif";
+        ctx.fillStyle = "white";
+        ctx.strokeStyle = 'cornflowerblue';
+        ctx.lineWidth = 2;
+        ctx.textAlign = "center";
+        ctx.fillText("Select a player", canvas.width/2.0, canvas.height/2.0);
+        ctx.strokeText("Select a player", canvas.width/2.0, canvas.height/2.0);
+
+        playerSelector.render();
+        /* Loop through the number of rows and columns we've defined above
+         * and, using the rowImages array, draw the correct image for that
+         * portion of the "grid"
+         */
+        for (col = 0; col < numCols; col++) {
+            /* The drawImage function of the canvas' context element
+             * requires 3 parameters: the image to draw, the x coordinate
+             * to start drawing and the y coordinate to start drawing.
+             * We're using our Resources helpers to refer to our images
+             * so that we get the benefits of caching these images, since
+             * we're using them over and over.
+             */
+            ctx.drawImage(Resources.get(players[col]), col * 101, 383);
+        }
     }
 
     /* Go ahead and load all of the images we know we're going to need to
@@ -184,7 +242,12 @@ var Engine = (function(global) {
         'images/water-block.png',
         'images/grass-block.png',
         'images/enemy-bug.png',
-        'images/char-boy.png'
+        'images/char-boy.png',
+        'images/char-cat-girl.png',
+        'images/char-horn-girl.png',
+        'images/char-pink-girl.png',
+        'images/char-princess-girl.png',
+        'images/Selector.png'
     ]);
     Resources.onReady(init);
 

@@ -89,6 +89,9 @@ Player.prototype.handleInput = function (input) {
 // Render the player sprite on canvas
 Player.prototype.render = function () {
     ctx.drawImage(Resources.get(this.sprite), this.spriteX, this.spriteY);
+    for (var i = 0; i < this.life; i++) {
+        ctx.drawImage(Resources.get('images/Heart.png'), (xBounds.max-60) - i*50, 40, 50, 85);
+    }
 };
 // Reset player's initial position
 Player.prototype.reset = function () {

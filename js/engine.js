@@ -193,6 +193,7 @@ var Engine = (function(global) {
                 });
             player = new Player();
             playerSelector = new Selector();
+            document.removeEventListener('keyup', playerEventHandler);
             document.addEventListener('keyup', selectorEventHandler);
         }
     }
@@ -208,7 +209,7 @@ var Engine = (function(global) {
             numCols = 5,
             col;
 
-        ctx.font = "80px Sans-serif";
+        ctx.font = "60px Sans-serif";
         ctx.fillStyle = "white";
         ctx.strokeStyle = 'cornflowerblue';
         ctx.lineWidth = 2;

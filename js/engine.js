@@ -71,6 +71,7 @@ var Engine = (function(global) {
     function init() {
         reset();
         lastTime = Date.now();
+        bgSound.play();
         main();
     }
 
@@ -108,10 +109,12 @@ var Engine = (function(global) {
                 enemy.x + enemy.width > player.x &&
                 enemy.y < player.y + player.height &&
                 enemy.height + enemy.y > player.y) {
+                hurtSound.play();
                 if (player.life > 0) {
                     player.life -= 1;
                     player.reset();
                 } else {
+                    gameOverSound.play();
                     reset();
                 }
             }

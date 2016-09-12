@@ -126,10 +126,12 @@ Selector.prototype.render = function () {
 // Updates the Selector's position on canvas
 Selector.prototype.update = function (input) {
     if (input === "left") {
+        selectSound.play();
         if ((this.spriteX - 101) >= xBounds.min) {
             this.spriteX -= 101;
         }
     } else if (input === "right") {
+        selectSound.play();
         if ((this.spriteX + 101) < xBounds.max) {
             this.spriteX += 101;
         }
@@ -146,6 +148,7 @@ Selector.prototype.handleInput = function (input) {
                 break;
             }
         }
+        selectedSound.play();
     } else {
         this.update(input);
     }
@@ -189,3 +192,28 @@ function playerEventHandler(e) {
     };
     player.handleInput(allowedKeys[e.keyCode]);
 }
+
+function sound(src, loop) {
+    this.sound = document.createElement("audio");
+    this.sound.src = src;
+    this.sound.setAttribute("preload", "auto");
+    this.sound.setAttribute("controls", "none");
+    this.sound.style.display = "none";
+    if (loop) {
+        this.sound.setAttribute('loop', "");
+    }
+    document.body.appendChild(this.sound);
+    this.play = function(){
+        this.sound.play();
+    };
+    this.stop = function(){
+        this.sound.pause();
+    };
+}
+
+// Add audio elements
+var bgSound = new sound('audio/background.wav', true);
+var gameOverSound = new sound('audio/game-over.wav');
+var hurtSound = new sound('audio/hit-hurt.wav');
+var selectSound = new sound('audio/select.wav');
+var selectedSound = new sound('audio/selected.wav');
